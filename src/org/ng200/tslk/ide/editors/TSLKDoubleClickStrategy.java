@@ -10,17 +10,27 @@
  ******************************************************************************/
 package org.ng200.tslk.ide.editors;
 
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.ITextViewer;
 
 public class TSLKDoubleClickStrategy implements ITextDoubleClickStrategy {
 	protected ITextViewer fText;
 
+	@Override
 	public void doubleClicked(ITextViewer part) {
 		int pos = part.getSelectedRange().x;
 		if (pos < 0)
 			return;
 		fText = part;
 		selectWord(pos);
+	}
+
+	private void selectRange(int startPos, int stopPos) {
+		int offset = startPos + 1;
+		int length = stopPos - offset;
+		fText.setSelectedRange(offset, length);
 	}
 
 	protected boolean selectWord(int caretPos) {
@@ -60,11 +70,5 @@ public class TSLKDoubleClickStrategy implements ITextDoubleClickStrategy {
 		}
 
 		return false;
-	}
-
-	private void selectRange(int startPos, int stopPos) {
-		int offset = startPos + 1;
-		int length = stopPos - offset;
-		fText.setSelectedRange(offset, length);
 	}
 }

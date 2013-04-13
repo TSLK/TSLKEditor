@@ -12,27 +12,32 @@ package org.ng200.tslk.ide.editors;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.source.DefaultAnnotationHover;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 public class TSLKConfiguration extends SourceViewerConfiguration {
 	private TSLKDoubleClickStrategy doubleClickStrategy;
-	private TSLKScanner scanner;
 	private ColorManager colorManager;
 
 	public TSLKConfiguration(ColorManager colorManager) {
 		this.colorManager = colorManager;
 	}
 
+	@Override
+	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		return new DefaultAnnotationHover();
+	}
+
+	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return TSLKPartitionScanner.PARTITION_TYPES;
 	}
 
+	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
 			ISourceViewer sourceViewer, String contentType) {
 		if (doubleClickStrategy == null)
@@ -40,44 +45,14 @@ public class TSLKConfiguration extends SourceViewerConfiguration {
 		return doubleClickStrategy;
 	}
 
-	protected TSLKScanner getTSLKScanner() {
-		if (scanner == null) {
-			scanner = new TSLKScanner(colorManager);
-			scanner.setDefaultReturnToken(new Token(new TextAttribute(
-					colorManager.getColor(ColorManager.DEFAULT))));
-		}
-		return scanner;
-	}
-
+	@Override
 	public IPresentationReconciler getPresentationReconciler(
 			ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
-
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getTSLKScanner());
+		TSLKRepairer dr = new TSLKRepairer(colorManager);
+		dr.setDocument(sourceViewer.getDocument());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-
-		NonRuleBasedDamagerRepairer string = new NonRuleBasedDamagerRepairer(
-				new TextAttribute(colorManager.getColor(ColorManager.STRING)));
-		reconciler.setDamager(string, TSLKPartitionScanner.TSLK_STRING);
-		reconciler.setRepairer(string, TSLKPartitionScanner.TSLK_STRING);
-
-		NonRuleBasedDamagerRepairer multiLineComment = new NonRuleBasedDamagerRepairer(
-				new TextAttribute(
-						colorManager.getColor(ColorManager.MULTI_LINE_COMMENT)));
-		reconciler.setDamager(multiLineComment,
-				TSLKPartitionScanner.TSLK_ML_COMMENT);
-		reconciler.setRepairer(multiLineComment,
-				TSLKPartitionScanner.TSLK_ML_COMMENT);
-
-		NonRuleBasedDamagerRepairer singleLineComment = new NonRuleBasedDamagerRepairer(
-				new TextAttribute(colorManager
-						.getColor(ColorManager.SINGLE_LINE_COMMENT)));
-		reconciler.setDamager(singleLineComment,
-				TSLKPartitionScanner.TSLK_SL_COMMENT);
-		reconciler.setRepairer(singleLineComment,
-				TSLKPartitionScanner.TSLK_SL_COMMENT);
-
 		return reconciler;
 	}
 

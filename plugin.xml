@@ -13,5 +13,9 @@
             id="org.ng200.tslk.ide.editors.TSLKEditor">
       </editor>
    </extension>
-
+	<extension id="syntaxerror" point="org.eclipse.core.resources.markers">
+	   <super type="org.eclipse.core.resources.problemmarker"/>
+		<super type="org.eclipse.core.resources.textmarker"/>
+		<persistent value="true"/>
+	</extension>
 </plugin>

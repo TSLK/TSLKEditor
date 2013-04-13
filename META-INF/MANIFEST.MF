@@ -7,8 +7,13 @@ Bundle-Activator: org.ng200.tslk.ide.editors.activator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ TSLKTranslationEclipseWrapper;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.eclipse.ui.views.contentoutline,
+ org.ng200.tslk.lang
 

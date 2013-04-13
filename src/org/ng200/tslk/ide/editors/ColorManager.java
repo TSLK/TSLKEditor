@@ -25,7 +25,7 @@ public class ColorManager {
 	public static final RGB KEYWORD = new RGB(127, 0, 85);
 	public static final RGB STRING = new RGB(45, 0, 255);
 	public static final RGB DEFAULT = new RGB(0, 0, 0);
-	public static final RGB BACKGROUND = new RGB(255, 255, 255);
+	public static final RGB BACKGROUND = null;
 
 	protected Map<RGB, Color> fColorTable = new HashMap<RGB, Color>(10);
 
@@ -36,6 +36,8 @@ public class ColorManager {
 	}
 
 	public Color getColor(RGB rgb) {
+		if (rgb == null)
+			return null;
 		Color color = fColorTable.get(rgb);
 		if (color == null) {
 			color = new Color(Display.getCurrent(), rgb);
